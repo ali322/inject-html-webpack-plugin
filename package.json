@@ -1,0 +1,23 @@
+{
+  "name": "inject-html-webpack-plugin",
+  "version": "0.0.2",
+  "description": "inject html when webpack compiling",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/ali322/inject-html-webpack-plugin.git"
+  },
+  "keywords": [
+    "webpack",
+    "html"
+  ],
+  "author": "alichen",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ali322/inject-html-webpack-plugin/issues"
+  },
+  "homepage": "https://github.com/ali322/inject-html-webpack-plugin#readme"
+}
