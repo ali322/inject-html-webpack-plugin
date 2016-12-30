@@ -57,6 +57,8 @@ then add below placeholders into html file
   <title>Document</title>
   <!-- start:css -->
   <!-- end:css -->
+  <!-- start:bundle-time -->
+  <!-- end:bundle-time -->
 </head>
 <body>
   <!-- start:js -->
@@ -75,7 +77,7 @@ Plugin Options
 - **endInjectJS**: end indentifier where to inject script labels,(eg: <!-- end:js -->)
 - **startInjectCSS**: start indentifier where to inject style links,(eg: <!-- start:css -->)
 - **endInjectCSS**: end indentifier where to inject style links,(eg: <!-- end:css -->)
-- **customInject**: array of custom inject,like bundle time,accept objects contains below key/values
+- **customInject**: array of custom inject,like bundle time,accept objects contains below key/values,
     + start: inject start identifier
     + end: inject end identifier
     + content: injected content
