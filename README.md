@@ -76,7 +76,6 @@ Plugin Options
 - **startInjectCSS**: start indentifier where to inject style links,(eg: <!-- start:css -->)
 - **endInjectCSS**: end indentifier where to inject style links,(eg: <!-- end:css -->)
 - **customInject**: array of custom inject,like bundle time,accept objects contains below key/values
-
     + start: inject start identifier
     + end: inject end identifier
     + content: injected content
