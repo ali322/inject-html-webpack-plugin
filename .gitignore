@@ -1,1 +1,6 @@
 node_modules/
+example/node_modules/
+example/yarn.lock
+example/dist/
+.vscode/
+__tests__/fixture/dist/

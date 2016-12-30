@@ -8,6 +8,8 @@ function InjectHtmlWebpackPlugin(options) {
     options.endInjectJS = options.endInjectJS || '<!-- end:js -->'
     options.startInjectCSS = options.startInjectCSS || '<!-- start:css -->'
     options.endInjectCSS = options.endInjectCSS || '<!-- end:css -->'
+    options.prefixURI = options.prefixURI || ''
+    options.customInject = options.customInject || []
     this.runing = false
 }
 
@@ -30,14 +32,14 @@ function assetsOfChunks(namedChunks,selected) {
     return assets
 }
 
-function injectWithin(html, startIndentifier, endIndentifier, content) {
-    var startIndex = html.indexOf(startIndentifier),
-        endIndex = html.indexOf(endIndentifier)
+function injectWithin(html, startIdentifier, endIdentifier, content) {
+    var startIndex = html.indexOf(startIdentifier),
+        endIndex = html.indexOf(endIdentifier)
     if (startIndex < 0 || endIndex < 0) {
         return html
     }
 
-    return html.substr(0,startIndex + startIndentifier.length) + content + html.substr(endIndex)
+    return html.substr(0,startIndex + startIdentifier.length) + content + html.substr(endIndex)
 }
 
 InjectHtmlWebpackPlugin.prototype.apply = function (compiler) {
@@ -52,6 +54,7 @@ InjectHtmlWebpackPlugin.prototype.apply = function (compiler) {
             endInjectJS = options.endInjectJS,
             startInjectCSS = options.startInjectCSS,
             endInjectCSS = options.endInjectCSS
+        var customInject = options.customInject
         if (that.runing) {
             callback()
             return
@@ -80,6 +83,15 @@ InjectHtmlWebpackPlugin.prototype.apply = function (compiler) {
         var _html = fs.readFileSync(filename, 'utf8')
         _html = injectWithin(_html, startInjectJS, endInjectJS, jsLabel)
         _html = injectWithin(_html, startInjectCSS, endInjectCSS, cssLabel)
+
+        customInject.forEach(function(inject){
+            console.log(inject)
+            var _startIdentifier = inject.start,_endIdentifier = inject.end,_content = inject.content
+            if(!_startIdentifier || !_endIdentifier){
+                return
+            }
+            _html = injectWithin(_html,_startIdentifier,_endIdentifier,_content)
+        })
         fs.writeFileSync(filename, _html)
         that.runing = true
         callback()
