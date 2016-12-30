@@ -1,4 +1,4 @@
-inject-html-webpack-plugin [![npm version](https://badge.fury.io/js/inject-html-webpack-plugin.svg)](https://badge.fury.io/js/inject-html-webpack-plugin)
+inject-html-webpack-plugin [![Build Status](https://travis-ci.org/ali322/inject-html-webpack-plugin.svg?branch=master)](https://travis-ci.org/ali322/inject-html-webpack-plugin) [![npm version](https://badge.fury.io/js/inject-html-webpack-plugin.svg)](https://badge.fury.io/js/inject-html-webpack-plugin)
 ===
 [![NPM](https://nodei.co/npm/inject-html-webpack-plugin.png?downloads=true&downloadRank=true&stars=true)](https://nodei.co/npm/inject-html-webpack-plugin/)
 
@@ -36,7 +36,12 @@ module.exports = {
         new InjectHtmlPlugin({
             filename:'./index.html',
             chunks:['index'],
-            prefixURI:"http://cdn.example.com"
+            prefixURI:"http://cdn.example.com",
+            customInject:[{
+                start:'<!-- start:bundle-time -->',
+                end:'<!-- end:bundle-time -->',
+                content:Date.now()
+            }]
         })
     ]
 }
@@ -70,6 +75,11 @@ Plugin Options
 - **endInjectJS**: end indentifier where to inject script labels,(eg: <!-- end:js -->)
 - **startInjectCSS**: start indentifier where to inject style links,(eg: <!-- start:css -->)
 - **endInjectCSS**: end indentifier where to inject style links,(eg: <!-- end:css -->)
+- **customInject**: array of custom inject,like bundle time,accept objects contains below key/values
+
+    + start: inject start identifier
+    + end: inject end identifier
+    + content: injected content
 
 ## License
 
