@@ -85,7 +85,6 @@ InjectHtmlWebpackPlugin.prototype.apply = function (compiler) {
         _html = injectWithin(_html, startInjectCSS, endInjectCSS, cssLabel)
 
         customInject.forEach(function(inject){
-            console.log(inject)
             var _startIdentifier = inject.start,_endIdentifier = inject.end,_content = inject.content
             if(!_startIdentifier || !_endIdentifier){
                 return
