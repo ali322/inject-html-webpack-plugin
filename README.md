@@ -2,7 +2,7 @@ inject-html-webpack-plugin [![Build Status](https://travis-ci.org/ali322/inject-
 ===
 [![NPM](https://nodei.co/npm/inject-html-webpack-plugin.png?downloads=true&downloadRank=true&stars=true)](https://nodei.co/npm/inject-html-webpack-plugin/)
 
-inspired by [html-webpack-plugin](https://github.com/ampedandwired/html-webpack-plugin),simple and efficient Webpack plugin that nject script label and style links into your html
+inspired by [html-webpack-plugin](https://github.com/ampedandwired/html-webpack-plugin),simple and efficient Webpack plugin that inject script label and style links into your html
 
 Install
 ===

@@ -1,34 +1,34 @@
 {
-  "name": "inject-html-webpack-plugin",
-  "version": "0.0.9",
-  "description": "inject html when webpack compiling",
-  "main": "index.js",
-  "scripts": {
-    "test": "ava --tap | tap-spec"
-  },
-  "ava": {
-    "babel": "inherit"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+ssh://git@github.com/ali322/inject-html-webpack-plugin.git"
-  },
-  "keywords": [
-    "webpack",
-    "html"
-  ],
-  "author": "alichen",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/ali322/inject-html-webpack-plugin/issues"
-  },
-  "homepage": "https://github.com/ali322/inject-html-webpack-plugin#readme",
-  "devDependencies": {
-    "ava": "^0.17.0",
-    "babel-core": "^6.21.0",
-    "babel-loader": "^6.2.10",
-    "babel-preset-latest": "^6.16.0",
-    "tap-spec": "^4.1.1",
-    "webpack": "^1.14.0"
-  }
+    "name": "inject-html-webpack-plugin",
+    "version": "0.0.10",
+    "description": "inject html when webpack compiling",
+    "main": "index.js",
+    "scripts": {
+        "test": "ava --tap | tap-spec"
+    },
+    "ava": {
+        "babel": "inherit"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+ssh://git@github.com/ali322/inject-html-webpack-plugin.git"
+    },
+    "keywords": [
+        "webpack",
+        "html"
+    ],
+    "author": "alichen",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/ali322/inject-html-webpack-plugin/issues"
+    },
+    "homepage": "https://github.com/ali322/inject-html-webpack-plugin#readme",
+    "devDependencies": {
+        "ava": "^0.17.0",
+        "babel-core": "^6.21.0",
+        "babel-loader": "^6.2.10",
+        "babel-preset-latest": "^6.16.0",
+        "tap-spec": "^4.1.1",
+        "webpack": "^1.14.0"
+    }
 }
