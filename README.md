@@ -36,7 +36,7 @@ module.exports = {
         new InjectHtmlPlugin({
             filename:'./index.html',
             chunks:['index'],
-            prefixURI:"http://cdn.example.com",
+            processor:"http://cdn.example.com",
             customInject:[{
                 start:'<!-- start:bundle-time -->',
                 end:'<!-- end:bundle-time -->',
@@ -70,7 +70,7 @@ then add below placeholders into html file
 Plugin Options
 ===
 
-- **prefixURI**: prefix uri string prepend to assets,like js,css
+- **processor**: apply processor to injected files,accept string to prepended or function that receive file path and return url string
 - **filename**: html file path which injected 
 - **chunks**: injected array of chunks
 - **startInjectJS**: start indentifier where to inject script labels,(eg: <!-- start:js -->)

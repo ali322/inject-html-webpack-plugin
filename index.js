@@ -8,21 +8,21 @@ function InjectHtmlWebpackPlugin(options) {
     options.endInjectJS = options.endInjectJS || '<!-- end:js -->'
     options.startInjectCSS = options.startInjectCSS || '<!-- start:css -->'
     options.endInjectCSS = options.endInjectCSS || '<!-- end:css -->'
-    options.prefixURI = options.prefixURI || ''
+    options.processor = options.processor || ''
     options.customInject = options.customInject || []
     this.runing = false
 }
 
-function assetsOfChunks(namedChunks,selected) {
+function assetsOfChunks(namedChunks, selected) {
     var assets = {
         js: [],
         css: []
     }
     var chunks = []
-    selected.forEach(function(chunkName){
+    selected.forEach(function(chunkName) {
         chunks = chunks.concat(namedChunks[chunkName] && namedChunks[chunkName].files || [])
     })
-    chunks.forEach(function (v) {
+    chunks.forEach(function(v) {
         if (/\.js$/.test(v)) {
             assets.js.push(v)
         } else if (/\.css$/.test(v)) {
@@ -38,18 +38,36 @@ function injectWithin(html, startIdentifier, endIdentifier, content) {
     if (startIndex < 0 || endIndex < 0) {
         return html
     }
-
-    return html.substr(0,startIndex + startIdentifier.length) + content + html.substr(endIndex)
+    var previousInnerContent = html.substring(startIndex + startIdentifier.length, endIndex)
+    var ident = leadingWhitespace(previousInnerContent)
+    var toInject = Array.isArray(content) ? content.slice() : [content]
+    toInject.unshift(html.substr(0, startIndex + startIdentifier.length))
+    toInject.push(html.substr(endIndex))
+    return toInject.join(ident)
 }
 
-InjectHtmlWebpackPlugin.prototype.apply = function (compiler) {
+function applyProcessor(originURL, processor) {
+    var _url = originURL
+    if (typeof processor === 'string') {
+        _url = path.join(processor, originURL)
+    } else if (typeof processor === 'function') {
+        typeof processor(originURL) === 'string' && (_url = processor(originURL))
+    }
+    return _url
+}
+
+function leadingWhitespace(str) {
+    return str.match(/^\s*/)[0]
+}
+
+InjectHtmlWebpackPlugin.prototype.apply = function(compiler) {
     var that = this
-    compiler.plugin('emit', function (compilation, callback) {
+    compiler.plugin('emit', function(compilation, callback) {
         var options = that.options
         var namedChunks = compilation.namedChunks
         var filename = options.filename
         var selected = options.chunks
-        var prefixURI = options.prefixURI
+        var processor = options.processor
         var startInjectJS = options.startInjectJS,
             endInjectJS = options.endInjectJS,
             startInjectCSS = options.startInjectCSS,
@@ -59,37 +77,29 @@ InjectHtmlWebpackPlugin.prototype.apply = function (compiler) {
             callback()
             return
         }
-        if(!options.filename){
+        if (!options.filename) {
             callback()
             return
         }
-        var assets = assetsOfChunks(namedChunks,selected)
-        var jsLabel = assets['js'].map(function (v) {
-            return '<script src="' + path.join(prefixURI, v) + '"></script>'
+        var assets = assetsOfChunks(namedChunks, selected)
+        var jsLabel = assets['js'].map(function(v) {
+            return '<script src="' + applyProcessor(v, processor) + '"></script>'
         })
-        if(jsLabel.length > 1){
-            jsLabel.unshift('\r')
-            jsLabel.push('\n')
-        }
-        jsLabel = jsLabel.join('\n')
-        var cssLabel = assets['css'].map(function (v) {
-            return '<link rel="stylesheet" href="' + path.join(prefixURI, v) + '"/>'
+        var cssLabel = assets['css'].map(function(v) {
+            return '<link rel="stylesheet" href="' + applyProcessor(v, processor) + '"/>'
         })
-        if(cssLabel.length > 1){
-            cssLabel.unshift('\r')
-            cssLabel.push('\n')
-        }
-        cssLabel = cssLabel.join('\n')
         var _html = fs.readFileSync(filename, 'utf8')
         _html = injectWithin(_html, startInjectJS, endInjectJS, jsLabel)
         _html = injectWithin(_html, startInjectCSS, endInjectCSS, cssLabel)
 
-        customInject.forEach(function(inject){
-            var _startIdentifier = inject.start,_endIdentifier = inject.end,_content = inject.content
-            if(!_startIdentifier || !_endIdentifier){
+        customInject.forEach(function(inject) {
+            var _startIdentifier = inject.start,
+                _endIdentifier = inject.end,
+                _content = inject.content
+            if (!_startIdentifier || !_endIdentifier) {
                 return
             }
-            _html = injectWithin(_html,_startIdentifier,_endIdentifier,_content)
+            _html = injectWithin(_html, _startIdentifier, _endIdentifier, _content)
         })
         fs.writeFileSync(filename, _html)
         that.runing = true
