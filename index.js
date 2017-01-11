@@ -4,6 +4,7 @@ var fs = require('fs'),
 function InjectHtmlWebpackPlugin(options) {
     this.options = options
     options.chunks = options.chunks || []
+    options.more = options.more || {}
     options.startInjectJS = options.startInjectJS || '<!-- start:js -->'
     options.endInjectJS = options.endInjectJS || '<!-- end:js -->'
     options.startInjectCSS = options.startInjectCSS || '<!-- start:css -->'
@@ -67,6 +68,7 @@ InjectHtmlWebpackPlugin.prototype.apply = function(compiler) {
         var namedChunks = compilation.namedChunks
         var filename = options.filename
         var selected = options.chunks
+        var more = options.more
         var processor = options.processor
         var startInjectJS = options.startInjectJS,
             endInjectJS = options.endInjectJS,
@@ -82,6 +84,9 @@ InjectHtmlWebpackPlugin.prototype.apply = function(compiler) {
             return
         }
         var assets = assetsOfChunks(namedChunks, selected)
+        more && Array.isArray(more.js) && assets['js'].concat(more.js)
+        more && Array.isArray(more.css) && assets['css'].concat(more.css)
+        
         var jsLabel = assets['js'].map(function(v) {
             return '<script src="' + applyProcessor(v, processor) + '"></script>'
         })
