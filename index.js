@@ -84,9 +84,9 @@ InjectHtmlWebpackPlugin.prototype.apply = function(compiler) {
             return
         }
         var assets = assetsOfChunks(namedChunks, selected)
-        more && Array.isArray(more.js) && assets['js'].concat(more.js)
-        more && Array.isArray(more.css) && assets['css'].concat(more.css)
-        
+        more && Array.isArray(more.js) && (assets['js'] = assets['js'].concat(more.js))
+        more && Array.isArray(more.css) && (assets['css'] = assets['css'].concat(more.css))
+
         var jsLabel = assets['js'].map(function(v) {
             return '<script src="' + applyProcessor(v, processor) + '"></script>'
         })
