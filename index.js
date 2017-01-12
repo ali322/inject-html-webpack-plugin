@@ -1,4 +1,4 @@
-var fs = require('fs'),
+var fs = require('fs-extra'),
     path = require('path')
 
 function InjectHtmlWebpackPlugin(options) {
@@ -33,7 +33,7 @@ function assetsOfChunks(namedChunks, selected) {
     return assets
 }
 
-function injectWithin(html, startIdentifier, endIdentifier, content) {
+function injectWithin(html, startIdentifier, endIdentifier, content, purified) {
     var startIndex = html.indexOf(startIdentifier),
         endIndex = html.indexOf(endIdentifier)
     if (startIndex < 0 || endIndex < 0) {
@@ -42,8 +42,9 @@ function injectWithin(html, startIdentifier, endIdentifier, content) {
     var previousInnerContent = html.substring(startIndex + startIdentifier.length, endIndex)
     var ident = leadingWhitespace(previousInnerContent)
     var toInject = Array.isArray(content) ? content.slice() : [content]
-    toInject.unshift(html.substr(0, startIndex + startIdentifier.length))
-    toInject.push(html.substr(endIndex))
+    purified ? toInject.unshift(html.substr(0, startIndex)) :
+        toInject.unshift(html.substr(0, startIndex + startIdentifier.length))
+    purified ? toInject.push(html.substr(endIndex + endIdentifier.length)) : toInject.push(html.substr(endIndex))
     return toInject.join(ident)
 }
 
@@ -63,18 +64,21 @@ function leadingWhitespace(str) {
 
 InjectHtmlWebpackPlugin.prototype.apply = function(compiler) {
     var that = this
+    var options = that.options
+    var filename = options.filename
+    var output = (typeof options.output === 'string' ? options.output : false)
+    var purified = !!output
+    var selected = options.chunks
+    var more = options.more
+    var processor = options.processor
+    var startInjectJS = options.startInjectJS,
+        endInjectJS = options.endInjectJS,
+        startInjectCSS = options.startInjectCSS,
+        endInjectCSS = options.endInjectCSS
+    var customInject = options.customInject
     compiler.plugin('emit', function(compilation, callback) {
-        var options = that.options
         var namedChunks = compilation.namedChunks
-        var filename = options.filename
-        var selected = options.chunks
-        var more = options.more
-        var processor = options.processor
-        var startInjectJS = options.startInjectJS,
-            endInjectJS = options.endInjectJS,
-            startInjectCSS = options.startInjectCSS,
-            endInjectCSS = options.endInjectCSS
-        var customInject = options.customInject
+        var _html
         if (that.runing) {
             callback()
             return
@@ -84,8 +88,6 @@ InjectHtmlWebpackPlugin.prototype.apply = function(compiler) {
             return
         }
         var assets = assetsOfChunks(namedChunks, selected)
-        more && Array.isArray(more.js) && (assets['js'] = assets['js'].concat(more.js))
-        more && Array.isArray(more.css) && (assets['css'] = assets['css'].concat(more.css))
 
         var jsLabel = assets['js'].map(function(v) {
             return '<script src="' + applyProcessor(v, processor) + '"></script>'
@@ -93,9 +95,35 @@ InjectHtmlWebpackPlugin.prototype.apply = function(compiler) {
         var cssLabel = assets['css'].map(function(v) {
             return '<link rel="stylesheet" href="' + applyProcessor(v, processor) + '"/>'
         })
-        var _html = fs.readFileSync(filename, 'utf8')
-        _html = injectWithin(_html, startInjectJS, endInjectJS, jsLabel)
-        _html = injectWithin(_html, startInjectCSS, endInjectCSS, cssLabel)
+        if (more) {
+            if (Array.isArray(more.js)) {
+                for (var i = 0; i < more.js.length; i++) {
+                    jsLabel.unshift('<script src="' + more.js[i] + '"></script>')
+                }
+            }
+            if (Array.isArray(more.css)) {
+                for (var j = 0; j < more.css.length; j++) {
+                    cssLabel.unshift('<link rel="stylesheet" href="' + more.css[j] + '"/>')
+                }
+            }
+        }
+        if (output) {
+            try {
+                fs.copySync(filename, output)
+                filename = output
+            } catch (e) {
+                compilation.errors.push(new Error('InjectHtmlWebpackPlugin copy filename to output failed'))
+            }
+        }
+        try{
+            _html = fs.readFileSync(filename, 'utf8')
+        }catch(e){
+            compilation.errors.push(new Error('InjectHtmlWebpackPlugin read filename failed'))
+            callback()
+            return
+        }
+        _html = injectWithin(_html, startInjectJS, endInjectJS, jsLabel, purified)
+        _html = injectWithin(_html, startInjectCSS, endInjectCSS, cssLabel, purified)
 
         customInject.forEach(function(inject) {
             var _startIdentifier = inject.start,
@@ -104,7 +132,7 @@ InjectHtmlWebpackPlugin.prototype.apply = function(compiler) {
             if (!_startIdentifier || !_endIdentifier) {
                 return
             }
-            _html = injectWithin(_html, _startIdentifier, _endIdentifier, _content)
+            _html = injectWithin(_html, _startIdentifier, _endIdentifier, _content, purified)
         })
         fs.writeFileSync(filename, _html)
         that.runing = true
