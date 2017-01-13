@@ -51,7 +51,7 @@ function injectWithin(html, startIdentifier, endIdentifier, content, purified) {
 function applyProcessor(originURL, processor) {
     var _url = originURL
     if (typeof processor === 'string') {
-        _url = process + originURL
+        _url = processor + originURL
     } else if (typeof processor === 'function') {
         typeof processor(originURL) === 'string' && (_url = processor(originURL))
     }
