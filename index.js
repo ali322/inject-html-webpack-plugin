@@ -41,6 +41,7 @@ function injectWithin(html, startIdentifier, endIdentifier, content, purified) {
     }
     var previousInnerContent = html.substring(startIndex + startIdentifier.length, endIndex)
     var ident = leadingWhitespace(previousInnerContent)
+    ident = ident.replace(/(\n[\s|\t]*\r*\n)/g,'\n')
     var toInject = Array.isArray(content) ? content.slice() : [content]
     purified ? toInject.unshift(html.substr(0, startIndex)) :
         toInject.unshift(html.substr(0, startIndex + startIdentifier.length))
