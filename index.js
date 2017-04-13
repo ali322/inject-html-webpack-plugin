@@ -139,6 +139,14 @@ InjectHtmlWebpackPlugin.prototype.apply = function(compiler) {
         that.runing = true
         callback()
     })
+    compiler.plugin('after-emmit',function(compilation,callback){
+        if(output){
+            if(compilation.fileDependencies.indexOf(output) === -1){
+                compilation.fileDependencies.push(output)
+            }
+        }
+        callback()
+    })
 }
 
 module.exports = InjectHtmlWebpackPlugin
