@@ -9,15 +9,15 @@ module.exports = {
         loaders:[
             {
                 test:/\.js$/,
-                loader:'babel'
+                loader:'babel-loader'
             },
             {
                 test:/\.less$/,
-                loader:ExtractTextPlugin.extract('style', 'css!less')
+                loader:ExtractTextPlugin.extract('style-loader', 'css-loader!less-loader')
             },
             {
                 test:/\.(jpg|png)$/,
-                loader:'url?limit=500'
+                loader:'url-loader?limit=500'
             }
         ]
     },

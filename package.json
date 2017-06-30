@@ -1,13 +1,10 @@
 {
   "name": "inject-html-webpack-plugin",
-  "version": "0.0.29",
+  "version": "0.0.30",
   "description": "inject html when webpack compiling",
   "main": "index.js",
   "scripts": {
-    "test": "ava --tap | tap-spec"
-  },
-  "ava": {
-    "babel": "inherit"
+    "test": "mocha test"
   },
   "repository": {
     "type": "git",
@@ -24,12 +21,9 @@
   },
   "homepage": "https://github.com/ali322/inject-html-webpack-plugin#readme",
   "devDependencies": {
-    "ava": "^0.17.0",
-    "babel-core": "^6.21.0",
-    "babel-loader": "^6.2.10",
-    "babel-preset-env": "^1.4.0",
-    "tap-spec": "^4.1.1",
-    "webpack": "^1.14.0"
+    "chai": "^4.0.2",
+    "mocha": "^3.4.2",
+    "webpack": "^2.6.1"
   },
   "dependencies": {
     "fs-extra": "^1.0.0"
