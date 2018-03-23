@@ -1,4 +1,7 @@
 let fs = require('fs-extra')
+let filter = require('lodash/filter')
+let includes = require('lodash/includes')
+let {extname} = require('path')
 
 function InjectHtmlWebpackPlugin(options) {
     this.options = options
@@ -13,21 +16,16 @@ function InjectHtmlWebpackPlugin(options) {
     this.runing = false
 }
 
-function assetsOfChunks(namedChunks, selected) {
+function assetsOfChunks(chunks, selected) {
     let assets = {
         js: [],
         css: []
     }
-    let chunks = []
-    selected.forEach(function(chunkName) {
-        chunks = chunks.concat(namedChunks[chunkName] && namedChunks[chunkName].files || [])
-    })
-    chunks.forEach(function(v) {
-        if (/\.js$/.test(v)) {
-            assets.js.push(v)
-        } else if (/\.css$/.test(v)) {
-            assets.css.push(v)
-        }
+    filter(chunks, chunk => includes(selected, chunk.name)).forEach(chunk => {
+        chunk.files.forEach(file => {
+            let ext = extname(file).replace('.','')
+            assets[ext] && assets[ext].push(file)
+        })
     })
     return assets
 }
@@ -75,8 +73,8 @@ InjectHtmlWebpackPlugin.prototype.apply = function(compiler) {
         startInjectCSS = options.startInjectCSS,
         endInjectCSS = options.endInjectCSS
     let customInject = options.customInject
-    compiler.plugin('emit', function(compilation, callback) {
-        let namedChunks = compilation.namedChunks
+    let emit = function(compilation, callback = () => {}) {
+        let chunks = compilation.chunks
         let html
         if (that.runing) {
             callback()
@@ -86,7 +84,7 @@ InjectHtmlWebpackPlugin.prototype.apply = function(compiler) {
             callback()
             return
         }
-        let assets = assetsOfChunks(namedChunks, selected)
+        let assets = assetsOfChunks(chunks, selected)
 
         let jsLabel = assets['js'].map(function(v) {
             return '<script src="' + applyTransducer(v, transducer) + '"></script>'
@@ -136,7 +134,12 @@ InjectHtmlWebpackPlugin.prototype.apply = function(compiler) {
         fs.writeFileSync(filename, html)
         that.runing = true
         callback()
-    })
+    }
+    if (compiler.hooks) {
+        compiler.hooks.emit.tap('InjectHtmlWebpackPlugin', emit)
+    } else {
+        compiler.plugin('emit', emit)
+    }
 }
 
 module.exports = InjectHtmlWebpackPlugin
