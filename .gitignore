@@ -4,3 +4,4 @@ example/yarn.lock
 example/dist/
 .vscode/
 __tests__/fixtures/dist/
+package-lock.json
