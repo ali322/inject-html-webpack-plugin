@@ -131,7 +131,7 @@ InjectHtmlWebpackPlugin.prototype.apply = function(compiler) {
         }
       }
     }
-    if (isString(output) && content) {
+    if (isString(output) && output) {
       try {
         fs.copySync(filename, output)
         filename = output
