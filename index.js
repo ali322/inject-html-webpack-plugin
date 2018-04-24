@@ -85,7 +85,10 @@ InjectHtmlWebpackPlugin.prototype.apply = function(compiler) {
   let that = this
   let options = that.options
   let filename = options.filename
-  let output = typeof options.output === 'string' ? options.output : false
+  let output =
+    isString(options.output) || isFunction(options.output)
+      ? options.output
+      : false
   let purified = !!output
   let selected = options.chunks
   let more = options.more
@@ -185,10 +188,10 @@ InjectHtmlWebpackPlugin.prototype.apply = function(compiler) {
         purified
       )
     })
-    if(isFunction(output)) {
-        output(filename, html)
+    if (isFunction(output)) {
+      output(filename, html)
     } else {
-        fs.writeFileSync(filename, html)
+      fs.writeFileSync(filename, html)
     }
     that.runing = true
     callback()
