@@ -37,7 +37,7 @@ module.exports = {
             filename:'./index.html',
             chunks:['index'],
             processor:"http://cdn.example.com",
-            customInject:[{
+            custom:[{
                 start:'<!-- start:bundle-time -->',
                 end:'<!-- end:bundle-time -->',
                 content:Date.now()
@@ -73,11 +73,11 @@ Plugin Options
 - **transducer**: apply transducer to injected files,accept string to prepended or function that receive file path and return url string
 - **filename**: html file path which injected 
 - **chunks**: injected array of chunks
-- **startInjectJS**: start indentifier where to inject script labels,(eg: <!-- start:js -->)
-- **endInjectJS**: end indentifier where to inject script labels,(eg: <!-- end:js -->)
-- **startInjectCSS**: start indentifier where to inject style links,(eg: <!-- start:css -->)
-- **endInjectCSS**: end indentifier where to inject style links,(eg: <!-- end:css -->)
-- **customInject**: array of custom inject,like bundle time,accept objects contains below key/values,
+- **startJS**: start indentifier where to inject script labels,(eg: <!-- start:js -->)
+- **endJS**: end indentifier where to inject script labels,(eg: <!-- end:js -->)
+- **startCSS**: start indentifier where to inject style links,(eg: <!-- start:css -->)
+- **endCSS**: end indentifier where to inject style links,(eg: <!-- end:css -->)
+- **custom**: array of custom inject,like bundle time,accept objects contains below key/values,
     + start: inject start identifier
     + end: inject end identifier
     + content: injected content

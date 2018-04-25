@@ -9,13 +9,13 @@ function InjectHtmlWebpackPlugin(options) {
   this.options = options
   options.chunks = options.chunks || []
   options.more = options.more || {}
-  options.autoInject = options.autoInject || false
-  options.startInjectJS = options.startInjectJS || '<!-- start:js -->'
-  options.endInjectJS = options.endInjectJS || '<!-- end:js -->'
-  options.startInjectCSS = options.startInjectCSS || '<!-- start:css -->'
-  options.endInjectCSS = options.endInjectCSS || '<!-- end:css -->'
+  options.auto = options.auto || false
+  options.startJS = options.startJS || '<!-- start:js -->'
+  options.endJS = options.endJS || '<!-- end:js -->'
+  options.startCSS = options.startCSS || '<!-- start:css -->'
+  options.endCSS = options.endCSS || '<!-- end:css -->'
   options.transducer = options.transducer || ''
-  options.customInject = options.customInject || []
+  options.custom = options.custom || []
   this.runing = false
 }
 
@@ -93,12 +93,12 @@ InjectHtmlWebpackPlugin.prototype.apply = function(compiler) {
   let selected = options.chunks
   let more = options.more
   let transducer = options.transducer
-  let autoInject = options.autoInject
-  let startInjectJS = options.startInjectJS,
-    endInjectJS = options.endInjectJS,
-    startInjectCSS = options.startInjectCSS,
-    endInjectCSS = options.endInjectCSS
-  let customInject = options.customInject
+  let autoInject = options.auto
+  let startInjectJS = options.startJS,
+    endInjectJS = options.endJS,
+    startInjectCSS = options.startCSS,
+    endInjectCSS = options.endCSS
+  let customInject = options.custom
   let emit = function(compilation, callback = () => {}) {
     let chunks = compilation.chunks
     let html

@@ -1,6 +1,6 @@
 {
   "name": "inject-html-webpack-plugin",
-  "version": "0.0.36",
+  "version": "0.0.37",
   "description": "inject html when webpack compiling",
   "main": "index.js",
   "scripts": {
