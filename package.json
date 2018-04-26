@@ -7,8 +7,11 @@
     "precommit": "lint-staged",
     "test": "mocha test"
   },
-  "lint-staged":{
-    "*.js": ["eslint", "git add"]
+  "lint-staged": {
+    "*.js": [
+      "eslint",
+      "git add"
+    ]
   },
   "repository": {
     "type": "git",
@@ -27,6 +30,8 @@
   "devDependencies": {
     "chai": "^4.0.2",
     "debug": "^3.1.0",
+    "husky": "^0.14.3",
+    "lint-staged": "^7.0.5",
     "mocha": "^3.4.2",
     "webpack": "^2.6.1"
   },
