@@ -4,7 +4,11 @@
   "description": "inject html when webpack compiling",
   "main": "index.js",
   "scripts": {
+    "precommit": "lint-staged",
     "test": "mocha test"
+  },
+  "lint-staged":{
+    "*.js": ["eslint", "git add"]
   },
   "repository": {
     "type": "git",
