@@ -5,5 +5,5 @@
   "parserOptions": {
     "sourceType": "module"
   },
-  "extends": "recommend"
+  "extends": "node"
 }

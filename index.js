@@ -40,8 +40,8 @@ function injectWithinByIndentifier(
   content,
   purified
 ) {
-  let start = html.indexOf(startIdentifier),
-    end = html.indexOf(endIdentifier)
+  let start = html.indexOf(startIdentifier)
+  let end = html.indexOf(endIdentifier)
   if (start < 0 || end < 0) {
     return html
   }
@@ -94,10 +94,10 @@ InjectHtmlWebpackPlugin.prototype.apply = function(compiler) {
   let more = options.more
   let transducer = options.transducer
   let autoInject = options.auto
-  let startInjectJS = options.startJS,
-    endInjectJS = options.endJS,
-    startInjectCSS = options.startCSS,
-    endInjectCSS = options.endCSS
+  let startInjectJS = options.startJS
+  let endInjectJS = options.endJS
+  let startInjectCSS = options.startCSS
+  let endInjectCSS = options.endCSS
   let customInject = options.custom
   let emit = function(compilation, callback = () => {}) {
     let chunks = compilation.chunks
@@ -144,17 +144,17 @@ InjectHtmlWebpackPlugin.prototype.apply = function(compiler) {
         )
       }
     }
-    try {
-      html = fs.readFileSync(filename, 'utf8')
-    } catch (e) {
-      compilation.errors.push(
-        new Error('InjectHtmlWebpackPlugin read filename failed')
-      )
-      callback()
-      return
-    }
 
-    function injector(html) {
+    function injector(filename) {
+      try {
+        html = fs.readFileSync(filename, 'utf8')
+      } catch (e) {
+        compilation.errors.push(
+          new Error('InjectHtmlWebpackPlugin read filename failed')
+        )
+        callback()
+        return
+      }
       if (autoInject) {
         html = injectWithin(html, jsLabel, false)
         html = injectWithin(html, cssLabel)
@@ -174,11 +174,11 @@ InjectHtmlWebpackPlugin.prototype.apply = function(compiler) {
           purified
         )
       }
-  
+
       customInject.forEach(function(inject) {
-        let startIdentifier = inject.start,
-          endIdentifier = inject.end,
-          content = inject.content
+        let startIdentifier = inject.start
+        let endIdentifier = inject.end
+        let content = inject.content
         if (!startIdentifier || !endIdentifier) {
           return
         }
@@ -195,7 +195,7 @@ InjectHtmlWebpackPlugin.prototype.apply = function(compiler) {
     if (isFunction(output)) {
       output(filename, injector)
     } else {
-      fs.writeFileSync(filename, injector(html))
+      fs.writeFileSync(filename, injector(filename))
     }
     that.runing = true
     callback()
