@@ -153,45 +153,49 @@ InjectHtmlWebpackPlugin.prototype.apply = function(compiler) {
       callback()
       return
     }
-    if (autoInject) {
-      html = injectWithin(html, jsLabel, false)
-      html = injectWithin(html, cssLabel)
-    } else {
-      html = injectWithinByIndentifier(
-        html,
-        startInjectJS,
-        endInjectJS,
-        jsLabel,
-        purified
-      )
-      html = injectWithinByIndentifier(
-        html,
-        startInjectCSS,
-        endInjectCSS,
-        cssLabel,
-        purified
-      )
-    }
 
-    customInject.forEach(function(inject) {
-      let startIdentifier = inject.start,
-        endIdentifier = inject.end,
-        content = inject.content
-      if (!startIdentifier || !endIdentifier) {
-        return
+    function injector(html) {
+      if (autoInject) {
+        html = injectWithin(html, jsLabel, false)
+        html = injectWithin(html, cssLabel)
+      } else {
+        html = injectWithinByIndentifier(
+          html,
+          startInjectJS,
+          endInjectJS,
+          jsLabel,
+          purified
+        )
+        html = injectWithinByIndentifier(
+          html,
+          startInjectCSS,
+          endInjectCSS,
+          cssLabel,
+          purified
+        )
       }
-      html = injectWithinByIndentifier(
-        html,
-        startIdentifier,
-        endIdentifier,
-        content,
-        purified
-      )
-    })
+  
+      customInject.forEach(function(inject) {
+        let startIdentifier = inject.start,
+          endIdentifier = inject.end,
+          content = inject.content
+        if (!startIdentifier || !endIdentifier) {
+          return
+        }
+        html = injectWithinByIndentifier(
+          html,
+          startIdentifier,
+          endIdentifier,
+          content,
+          purified
+        )
+      })
+      return html
+    }
     if (isFunction(output)) {
-      output(filename, html)
+      output(filename, injector)
     } else {
-      fs.writeFileSync(filename, html)
+      fs.writeFileSync(filename, injector(html))
     }
     that.runing = true
     callback()
