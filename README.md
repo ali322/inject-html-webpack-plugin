@@ -70,7 +70,7 @@ then add below placeholders into html file
 Plugin Options
 ===
 
-- **transducer**: apply transducer to injected files,accept prepended string or function that receive file path as argument and return url string as result
+- **transducer**: apply transducer to injected file's url,accept prepended string or function that receive file path as argument and return url string as result
 - **filename**: html file path which injected 
 - **chunks**: injected array of chunks
 - **startJS**: start indentifier where to inject script labels,(eg: <!-- start:js -->)
