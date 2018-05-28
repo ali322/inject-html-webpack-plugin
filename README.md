@@ -36,7 +36,7 @@ module.exports = {
         new InjectHtmlPlugin({
             filename:'./index.html',
             chunks:['index'],
-            processor:"http://cdn.example.com",
+            transducer:"http://cdn.example.com",
             custom:[{
                 start:'<!-- start:bundle-time -->',
                 end:'<!-- end:bundle-time -->',
