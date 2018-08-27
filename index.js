@@ -33,6 +33,16 @@ function assetsOfChunks(chunks, selected) {
   return assets
 }
 
+function mapOfChunks(chunks, selected) {
+  let chunkFilesMap = {};
+  filter(chunks, chunk => includes(selected, chunk.name)).forEach(chunk => {
+    chunk.files.forEach(file => {
+      chunkFilesMap[chunk.name] = file;
+    })
+  })
+  return chunkFilesMap
+}
+
 function injectWithinByIndentifier(
   html,
   startIdentifier,
@@ -111,6 +121,7 @@ InjectHtmlWebpackPlugin.prototype.apply = function(compiler) {
       return
     }
     let assets = assetsOfChunks(chunks, selected)
+    let chunkFilesMap = mapOfChunks(chunks, selected)
 
     let jsLabel = assets['js'].map(function(v) {
       return '<script src="' + applyTransducer(v, transducer) + '"></script>'
@@ -178,7 +189,7 @@ InjectHtmlWebpackPlugin.prototype.apply = function(compiler) {
       customInject.forEach(function(inject) {
         let startIdentifier = inject.start
         let endIdentifier = inject.end
-        let content = inject.content
+        let content = parseContent(inject.content)
         if (!startIdentifier || !endIdentifier) {
           return
         }
@@ -192,6 +203,14 @@ InjectHtmlWebpackPlugin.prototype.apply = function(compiler) {
       })
       return html
     }
+
+    function parseContent(content) {
+      for (var key in chunkFilesMap) {
+        content = content.replace('[' + key + ']', chunkFilesMap[key]);
+      }
+      return content;
+    }
+
     if (isFunction(output)) {
       output(filename, injector)
     } else {
