@@ -41,6 +41,11 @@ module.exports = {
                 start:'<!-- start:bundle-time -->',
                 end:'<!-- end:bundle-time -->',
                 content:Date.now()
+            },
+            {
+                start:'<!-- start:with-chunk-file -->',
+                end:'<!-- end:with-chunk-file -->',
+                content:'<script type="text/javascript" src="[index]"></script>'
             }]
         })
     ]
@@ -59,6 +64,8 @@ then add below placeholders into html file
   <!-- end:css -->
   <!-- start:bundle-time -->
   <!-- end:bundle-time -->
+  <!-- start:with-chunk-file -->
+  <!-- end:with-chunk-file -->
 </head>
 <body>
   <!-- start:js -->
