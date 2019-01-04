@@ -1,6 +1,5 @@
 const fs = require('fs-extra')
-const filter = require('lodash/filter')
-const includes = require('lodash/includes')
+const find = require('lodash/find')
 const isString = require('lodash/isString')
 const isFunction = require('lodash/isFunction')
 const { extname } = require('path')
@@ -24,12 +23,15 @@ function assetsOfChunks(chunks, selected) {
     js: [],
     css: []
   }
-  filter(chunks, chunk => includes(selected, chunk.name)).forEach(chunk => {
+  selected.forEach(name => {
+    const chunk = find(chunks, chunk => chunk.name === name);
+    if(!chunk){return};
+
     chunk.files.forEach(file => {
       let ext = extname(file).replace('.', '')
       assets[ext] && assets[ext].push(file)
     })
-  })
+  });
   return assets
 }
 
@@ -107,6 +109,13 @@ InjectHtmlWebpackPlugin.prototype.apply = function(compiler) {
       return
     }
     if (!options.filename) {
+      callback()
+      return
+    }
+    if(!Array.isArray(options.chunks)){
+      compilation.errors.push(
+        new Error('InjectHtmlWebpackPlugin option.chunks should be an array')
+      )
       callback()
       return
     }
