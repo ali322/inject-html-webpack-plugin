@@ -100,7 +100,7 @@ InjectHtmlWebpackPlugin.prototype.apply = function(compiler) {
   let endInjectCSS = options.endCSS
   let customInject = options.custom
   let emit = function(compilation, callback = () => {}) {
-    let chunks = compilation.chunks
+    let chunks = Array.from(compilation.chunks)
     let html
     if (that.runing) {
       callback()
