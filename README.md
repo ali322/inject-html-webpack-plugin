@@ -1,5 +1,5 @@
 inject-html-webpack-plugin 
-[![Build Status](https://travis-ci.org/ali322/inject-html-webpack-plugin.svg?branch=master)](https://travis-ci.org/ali322/inject-html-webpack-plugin) [![npm version](https://badge.fury.io/js/inject-html-webpack-plugin.svg)](https://badge.fury.io/js/inject-html-webpack-plugin)
+[![Build Status](https://travis-ci.org/ali322/inject-html-webpack-plugin.svg?branch=master)](https://travis-ci.org/ali322/inject-html-webpack-plugin)
 ===
 [![NPM](https://nodei.co/npm/inject-html-webpack-plugin.png?downloads=true&downloadRank=true&stars=true)](https://nodei.co/npm/inject-html-webpack-plugin/)
 
