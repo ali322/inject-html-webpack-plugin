@@ -3,6 +3,7 @@ const filter = require('lodash/filter')
 const includes = require('lodash/includes')
 const isString = require('lodash/isString')
 const isFunction = require('lodash/isFunction')
+const template = require('lodash/template')
 const { extname } = require('path')
 
 function InjectHtmlWebpackPlugin(options) {
@@ -24,8 +25,8 @@ function assetsOfChunks(chunks, selected) {
     js: [],
     css: []
   }
-  filter(chunks, chunk => includes(selected, chunk.name)).forEach(chunk => {
-    chunk.files.forEach(file => {
+  filter(chunks, (chunk) => includes(selected, chunk.name)).forEach((chunk) => {
+    chunk.files.forEach((file) => {
       let ext = extname(file).replace('.', '')
       assets[ext] && assets[ext].push(file)
     })
@@ -81,7 +82,7 @@ function leadingWhitespace(str) {
   return str.match(/^\s*/)[0]
 }
 
-InjectHtmlWebpackPlugin.prototype.apply = function(compiler) {
+InjectHtmlWebpackPlugin.prototype.apply = function (compiler) {
   let that = this
   let options = that.options
   let filename = options.filename
@@ -99,7 +100,9 @@ InjectHtmlWebpackPlugin.prototype.apply = function(compiler) {
   let startInjectCSS = options.startCSS
   let endInjectCSS = options.endCSS
   let customInject = options.custom
-  let emit = function(compilation, callback = () => {}) {
+  let cssLabelTemplate = options.cssLabel
+  let jsLabelTemplate = options.jsLabel
+  let emit = function (compilation, callback = () => {}) {
     let chunks = Array.from(compilation.chunks)
     let html
     if (that.runing) {
@@ -112,24 +115,34 @@ InjectHtmlWebpackPlugin.prototype.apply = function(compiler) {
     }
     let assets = assetsOfChunks(chunks, selected)
 
-    let jsLabel = assets['js'].map(function(v) {
-      return '<script src="' + applyTransducer(v, transducer) + '"></script>'
+    let jsLabel = assets['js'].map(function (v) {
+      return isFunction(jsLabelTemplate)
+        ? jsLabelTemplate(applyTransducer(v, transducer))
+        : '<script src="' + applyTransducer(v, transducer) + '"></script>'
     })
-    let cssLabel = assets['css'].map(function(v) {
-      return (
-        '<link rel="stylesheet" href="' + applyTransducer(v, transducer) + '"/>'
-      )
+    let cssLabel = assets['css'].map(function (v) {
+      return isFunction(cssLabelTemplate)
+        ? cssLabelTemplate(applyTransducer(v, transducer))
+        : '<link rel="stylesheet" href="' +
+            applyTransducer(v, transducer) +
+            '"/>'
     })
     if (more) {
       if (Array.isArray(more.js)) {
         for (let i = 0; i < more.js.length; i++) {
-          jsLabel.unshift('<script src="' + more.js[i] + '"></script>')
+          jsLabel.unshift(
+            isFunction(jsLabelTemplate)
+              ? jsLabelTemplate(more.js[i])
+              : '<script src="' + more.js[i] + '"></script>'
+          )
         }
       }
       if (Array.isArray(more.css)) {
         for (var j = 0; j < more.css.length; j++) {
           cssLabel.unshift(
-            '<link rel="stylesheet" href="' + more.css[j] + '"/>'
+            isFunction(cssLabelTemplate)
+              ? cssLabelTemplate(more.css[j])
+              : '<link rel="stylesheet" href="' + more.css[j] + '"/>'
           )
         }
       }
@@ -175,7 +188,7 @@ InjectHtmlWebpackPlugin.prototype.apply = function(compiler) {
         )
       }
 
-      customInject.forEach(function(inject) {
+      customInject.forEach(function (inject) {
         let startIdentifier = inject.start
         let endIdentifier = inject.end
         let content = inject.content

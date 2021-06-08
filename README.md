@@ -74,6 +74,8 @@ Plugin Options
 - **transducer**: apply transducer to injected file's url,accept prepended string or function that receive file path as argument and return url string as result
 - **filename**: html file path which injected 
 - **chunks**: injected array of chunks
+- **jsLabelTemplate**: use function to generate js Label
+- **cssLabelTemplate**: use function to generate css Label
 - **startJS**: start indentifier where to inject script labels,(eg: `<!-- start:js -->`)
 - **endJS**: end indentifier where to inject script labels,(eg: `<!-- end:js -->`)
 - **startCSS**: start indentifier where to inject style links,(eg: `<!-- start:css -->`)
